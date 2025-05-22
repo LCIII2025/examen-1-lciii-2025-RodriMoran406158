@@ -4,15 +4,36 @@ import java.util.*;
 
 public class Estacionamiento {
     private final int capacidadMaxima = 50;
-    private final Map<String, Ticket> vehiculosEstacionados = new HashMap<>();
-    private final Map<String, Cliente> clientesRegistrados = new HashMap<>();
+    private final Map<String, Ticket> vehiculosEstacionados = new HashMap<>(); // patente y ticket
+    private final Map<String, Cliente> clientesRegistrados = new HashMap<>(); // Dni y Cliente
 
     public boolean ingresarVehiculo(String dni, String nombre, Vehiculo vehiculo) {
         // TODO implementar la logica para registrar el ingreso de un nuevo vehiculo en el parking
-        // la capacidad maxima del estacionamiento es de 50 vehiculos, si supera esta cap[acidad retornar FALSE
+        // la capacidad maxima del estacionamiento es de 50 vehiculos, si supera esta capacidad retornar FALSE
         // validar que no exista otro vehiculo con la misma patente, es un caso de error, retornar FALSE
         // validar si existe el cliente registrado, agregar el nuevo vehiculo en la lista del cliente existente, caso contrario crear un nuevo registro
         // si el proceso es exitoso retornar TRUE
+        if(vehiculosEstacionados.size() >= capacidadMaxima){
+            return false;
+        }
+
+        if (vehiculosEstacionados.containsKey(vehiculo.getPatente())) {
+            return false;
+        }
+
+        if (clientesRegistrados.containsKey(dni)) {
+            clientesRegistrados.get(dni).agregarVehiculo(vehiculo);
+        } else {
+            Cliente clienteNuevo = new Cliente(dni, nombre);
+            clienteNuevo.agregarVehiculo(vehiculo);
+            clientesRegistrados.put(dni, clienteNuevo); 
+        }
+
+
+        Cliente clienteNuevo = new Cliente(dni, nombre);
+        clienteNuevo.agregarVehiculo(vehiculo);
+        Ticket ticket = new Ticket(clienteNuevo,vehiculo);
+        vehiculosEstacionados.put(vehiculo.getPatente(), ticket);
 
         return false;
     }
