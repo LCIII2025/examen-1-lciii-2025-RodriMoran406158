@@ -23,27 +23,30 @@ public class Estacionamiento {
 
         if (clientesRegistrados.containsKey(dni)) {
             clientesRegistrados.get(dni).agregarVehiculo(vehiculo);
-        } else {
+        }
+        else {
             Cliente clienteNuevo = new Cliente(dni, nombre);
             clienteNuevo.agregarVehiculo(vehiculo);
-            clientesRegistrados.put(dni, clienteNuevo); 
+            clientesRegistrados.put(dni, clienteNuevo);
+            Ticket ticket = new Ticket(clienteNuevo, vehiculo);
+            vehiculosEstacionados.put(vehiculo.getPatente(),ticket);
         }
 
-
-        Cliente clienteNuevo = new Cliente(dni, nombre);
-        clienteNuevo.agregarVehiculo(vehiculo);
-        Ticket ticket = new Ticket(clienteNuevo,vehiculo);
-        vehiculosEstacionados.put(vehiculo.getPatente(), ticket);
-
-        return false;
+        return true;
     }
 
     public Ticket retirarVehiculo(String patente) throws Exception {
         // TODO implementar la lógica para retirar un vehiculo del parking
         // validar que exista la patente, caso contrario arrojar la exception "Vehiculo no encontrado"
         // calcular y retornar el ticket del vehiculoEstacionado (ver Ticket.marcarSalida())
+        if(!vehiculosEstacionados.containsKey(patente)){
+            throw new Exception("Vehiculo no encontrado");
+        }
+        Ticket ticket = vehiculosEstacionados.get(patente);
+        ticket.marcarSalida();
+        vehiculosEstacionados.remove(patente);
 
-        return null;
+        return ticket;
     }
 
     public List<Ticket> listarVehiculosEstacionados() {
